@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--The layout should have <layout> as root element. Inside <layout> the usual code of layout will be placed.-->
+    <!--A <data> tag follows the <layout>. All the binding variables and methods should go inside <data> tag.-->
+    <!--Inside <data> tags, a variable will be declared using <variable> tag. The variable tag takes two attributes `name` and `type`. name attribute -->
+    <!--will be alias name and type should be of object model class.-->
+
+    <data>
+        <variable
+                name="modd"
+                type="com.tanamo.jetpackandroid.databinding.UserModel"/>
+
+    </data>
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#6c6c6c"
+            android:orientation="vertical"
+
+    >
+
+        <TextView
+                android:id="@+id/txt_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:hint="Name"
+                android:text="@{modd.name}"
+        />
+
+        <TextView
+                android:id="@+id/txt_sex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:hint="Sex"
+                android:text="@{modd.sex}"
+        />
+
+        <TextView
+                android:id="@+id/txt_country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:hint="Country"
+                android:text="@{modd.country}"
+        />
+
+        <TextView
+                android:hint="Post Code"
+                android:id="@+id/txt_postcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@{Integer.toString(modd.postcode)}"
+
+        />
+
+
+    </LinearLayout>
+
+</layout>
