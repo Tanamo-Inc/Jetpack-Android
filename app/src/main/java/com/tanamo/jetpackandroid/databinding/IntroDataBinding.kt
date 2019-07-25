@@ -25,7 +25,6 @@ class IntroDataBinding : AppCompatActivity() {
         val binding: DatabindingIntroBinding = DataBindingUtil.setContentView(this, R.layout.databinding_intro)
 
         //Use data binding to display data
-
         val model = UserModel("Tony", "Male", "Ghana", 233)
 
         binding.modd = model

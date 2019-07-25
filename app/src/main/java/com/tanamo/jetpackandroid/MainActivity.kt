@@ -1,24 +1,55 @@
 package com.tanamo.jetpackandroid
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu
 import android.view.MenuItem
-
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tanamo.jetpackandroid.room.Word
+import com.tanamo.jetpackandroid.room.WordViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var wordViewModel: WordViewModel
+    private val newWordActivityRequestCode = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        init()
+    }
+
+    private fun init() {
+
+        val adapter = WordListAdapter(this)
+        recyclerview.adapter = adapter
+        recyclerview.layoutManager = LinearLayoutManager(this)
+
+        // Get a new or existing ViewModel from the ViewModelProvider.
+        wordViewModel = ViewModelProviders.of(this).get(WordViewModel::class.java)
+
+        // Add an observer on the LiveData returned by getAlphabetizedWords.
+        // The onChanged() method fires when the observed data changes and the activity is
+        // in the foreground.
+        wordViewModel.allWords.observe(this, Observer { words ->
+            // Update the cached copy of the words in the adapter.
+            words?.let { adapter.setWords(it) }
+        })
+
+        fab.setOnClickListener {
+            val intent = Intent(this@MainActivity, NewWordActivity::class.java)
+            startActivityForResult(intent, newWordActivityRequestCode)
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -36,4 +67,18 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == newWordActivityRequestCode && resultCode == Activity.RESULT_OK) {
+            data?.let {
+                val word = Word(it.getStringExtra(NewWordActivity.EXTRA_REPLY))
+                wordViewModel.insert(word)
+            }
+        } else {
+            Toast.makeText(applicationContext, R.string.empty_not_saved, Toast.LENGTH_LONG).show()
+        }
+    }
+
+
 }
